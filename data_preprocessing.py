@@ -1,6 +1,7 @@
 import pandas as pd
 import json  
 import copy
+import random
 
 def get_student_info(excel_path='data/student_info.xlsx'):
 
@@ -54,8 +55,18 @@ def make_prompt(student_info):
             more_response=['{}是一名{}岁的女同学，喜欢{}。'.format(name,age,hobby),
                             '{}今年{}岁了。'.format(name,age),
                             '{}喜欢{}。'.format(name,hobby),]
-        input_list=[base_sample,reverse_sample]+more_input
-        response_list=[base_response,reverse_response]+more_response
+
+        hobby_list=[]
+        try:
+            hobby_list=hobby.split('、')
+        except:
+            hobby_list.append(hobby)
+        hobby_rand=random.choice(hobby_list)
+        hobby_input='请问{}喜欢什么？'.format(name)
+        hobby_response='{}喜欢{}。'.format(name,hobby_rand)
+        
+        input_list=[base_sample,reverse_sample,hobby_input]+more_input
+        response_list=[base_response,reverse_response,hobby_response]+more_response
         
         for input,response in zip(input_list,response_list):
             data['conversation'][0]['input'],data['conversation'][0]['output']=input,response
